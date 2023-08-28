@@ -14,20 +14,19 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center p-8 pt-24">
       <div>
         <div className="text-3xl font-semibold">Hey, I&apos;m Ian</div>
-
-        <div className='text-md py-2 text-zinc-400'>I&apos;m building AI-powered data tools in New York City. I write and invest sometimes.</div>
+        <div className='text-md  py-2 text-zinc-400'>I&apos;m building AI-powered data tools in New York City. I write and invest sometimes.</div>
 
 
         <div className="mt-12 space-y-2 text-md">
           <div className="text-2xl text-zinc-400">Currently</div>
           <div>
-            Co-founder & CTO at{" "}
+            Co-founder at{" "}
             <Link color="text-sky-500" href="https://turntable.so" overrides={"font-normal"}>
-              Turntable
+              Turntable (YC W23)
             </Link>
           </div>
           <div>
-            Angel investor in{" "}
+            Investor in{" "}
             <Link color="text-sky-500" overrides={"font-normal"}>
               Airhouse, Density, Headgum & more
             </Link>
