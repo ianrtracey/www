@@ -20,8 +20,8 @@ export default function WritingPage() {
         ) : (
           posts.map((post) => (
             <article key={post.slug}>
-              <Link href={`/writing/${post.slug}`} className="group flex items-baseline gap-4">
-                <time className="text-sm text-zinc-400 shrink-0">{post.date}</time>
+              <Link href={`/writing/${post.slug}`} className="group block">
+                <time className="text-sm text-zinc-400">{post.date}</time>
                 <h2 className="text-lg font-medium group-hover:text-blue-500 dark:group-hover:text-blue-400">
                   {post.title}
                 </h2>
