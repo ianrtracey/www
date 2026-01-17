@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     default: 'Ian Tracey',
     template: '%s | Ian Tracey',
   },
-  description: 'Building AI-powered data tools in New York City. I write and invest sometimes.',
+  description: 'Working on Applied AI at Ramp in NYC. I write and invest sometimes.',
   metadataBase: new URL('https://ian.so'),
   openGraph: {
     title: 'Ian Tracey',
-    description: 'Building AI-powered data tools in New York City. I write and invest sometimes.',
+    description: 'Working on Applied AI at Ramp in NYC. I write and invest sometimes.',
     url: 'https://ian.so',
     siteName: 'Ian Tracey',
     locale: 'en_US',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Ian Tracey',
-    description: 'Building AI-powered data tools in New York City. I write and invest sometimes.',
+    description: 'Working on Applied AI at Ramp in NYC. I write and invest sometimes.',
   },
   robots: {
     index: true,
