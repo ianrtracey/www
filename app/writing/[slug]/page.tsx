@@ -51,7 +51,6 @@ export default async function PostPage({ params }: PostPageProps) {
       <header className="mb-8">
         <time className="text-sm text-zinc-400">{post.date}</time>
         <h1 className="mt-2 text-3xl font-semibold">{post.title}</h1>
-        <p className="mt-4 text-zinc-500 dark:text-zinc-400">{post.description}</p>
       </header>
       <div className="prose prose-zinc max-w-none">
         <Content />
