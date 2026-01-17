@@ -42,7 +42,12 @@ export default function Home() {
             <p className="text-sm text-zinc-500 dark:text-zinc-400">2017 - 2018</p>
           </div>
           <div>
-            <p className="font-medium">Co-Founder & President, <span className="text-zinc-700 dark:text-zinc-300">Hack Arizona</span></p>
+            <p className="font-medium">Software Engineer, <a href="https://tucson.com/business/article_09637f1a-4cb7-5953-a1d8-e6759f992bc0.html" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Latitude (Acquired by L3)</a></p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Drone swarm applications for DARPA special projects</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">2015 - 2017</p>
+          </div>
+          <div>
+            <p className="font-medium">Co-Founder & President, <a href="https://medium.com/@iantracey/what-i-learned-about-starting-things-and-people-after-3-years-of-running-hackathons-93d9071e0496" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Hack Arizona</a></p>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">3000+ students, $500k in sponsorships, lots of startups launched</p>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">2014 - 2017</p>
           </div>
@@ -54,7 +59,7 @@ export default function Home() {
         <div className="mt-4 space-y-4">
           <div>
             <a href="https://www.airhouse.io/" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium">Airhouse (Acquired by Syncware)</a>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Ecommerce operations and logistics</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">E-commerce operations and logistics</p>
           </div>
           <div>
             <a href="https://density.io/" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium">Density</a>
