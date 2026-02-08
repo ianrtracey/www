@@ -30,6 +30,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# poker db
+/data/
+
+# drizzle migrations
+/drizzle/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
