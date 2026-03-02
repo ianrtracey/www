@@ -143,7 +143,7 @@ async function getPlayerDecision(
 function buildPrompt(
   playerName: string,
   ctx: {
-    holeCards: Card[];
+    holeCards: Card[
     communityCards: Card[];
     phase: Phase;
     potTotal: number;

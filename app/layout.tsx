@@ -1,8 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import type { Metadata } from 'next'
 
@@ -55,13 +53,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100`}>
+      <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
-          <div className="min-h-screen flex flex-col max-w-2xl mx-auto px-6">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          {children}
         </ThemeProvider>
         <Analytics />
       </body>
