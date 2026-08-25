@@ -1,15 +1,17 @@
 ---
-title: Hermes on my phone
+title: An agent on my phone, without a public port
 date: 2026-08-25
-description: A Claude Code prompt that stands up Hermes Agent, Tailscale, Hermex, and Ramp Router.
+description: The prompt I use to put Hermes Agent on my iPhone with Tailscale, Hermex, and Ramp Router.
 ---
 
-Everyone wants an agent on their phone. Most of the writeups stop at a tunnel that dies when you close the laptop.
+Putting an agent on your phone sounds like the easy part.
 
-I wanted Hermes on my iPhone, over Tailscale, with Ramp Router as the model gateway. One VPS. Port 8787 stays off the public internet. Model ids come from the catalog, not from memory.
+I wanted Hermes Agent on my iPhone through the Hermex app, with Tailscale handling access and port 8787 nowhere near the public internet. One VPS, preferably Hetzner, DigitalOcean if that doesn't work.
 
-The setup is a pile of docs. Hermes Agent, WebUI, Hermex, Tailscale, a Hetzner or DigitalOcean box, then a gateway that speaks Responses and not the chat API you already have wired. None of that is hard. Forgetting one of them is.
+Ramp Router sits in front of the models. One Responses API, model ids pulled from the catalog, no guessing vendor names from memory.
 
-This is the prompt I paste into Claude Code. Fill the slots. It does the work.
+It's a small stack, but there are enough pieces to lose an hour wiring it up wrong.
+
+The rest of this page is the Claude Code prompt I use to stand it up.
 
 Fill the placeholders, then copy everything below into Claude Code.
