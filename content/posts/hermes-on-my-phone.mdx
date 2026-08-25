@@ -4,14 +4,18 @@ date: 2026-08-25
 description: The prompt I use to put Hermes Agent on my iPhone with Tailscale, Hermex, and Ramp Router.
 ---
 
-Putting an agent on your phone sounds like the easy part.
+The chat is the least interesting part of a personal agent.
 
-I wanted Hermes Agent on my iPhone through the Hermex app, with Tailscale handling access and port 8787 nowhere near the public internet. One VPS, preferably Hetzner, DigitalOcean if that doesn't work.
+I wanted a stateful box I could share with Hermes Agent, where the filesystem holds the work and I'm not rebuilding context across a pile of threads. I can hand it parallel jobs, leave, and get a ping when it has a result or actually needs a decision.
 
-Ramp Router sits in front of the models. One Responses API, model ids pulled from the catalog, no guessing vendor names from memory.
+Hermex puts that same session on my iPhone. I can dispatch something from my phone, continue from my desktop, or set up a recurring job in natural language without treating every interaction like a new session.
 
-It's a small stack, but there are enough pieces to lose an hour wiring it up wrong.
+Tailscale handles access, with port 8787 nowhere near the public internet. The agent can keep its files, browser state, cookies, and secrets on one VPS, preferably Hetzner, with DigitalOcean as the fallback.
 
-The rest of this page is the Claude Code prompt I use to stand it up.
+That state matters once you move past demos. Real work includes logins, inbound hooks, email, git, and sites that'll never ship the integration you want. The agent needs a computer, not another thin layer over chat.
+
+Ramp Router sits in front of the models so I can see what the work actually costs and stay model-agnostic. One Responses API, model ids pulled from the catalog, no guessing vendor names from memory.
+
+It's a small stack, but there are enough pieces to lose an hour wiring it up wrong. The prompt below stands up Hermes, Hermex, Tailscale, and Ramp Router together.
 
 Fill the placeholders, then copy everything below into Claude Code.
