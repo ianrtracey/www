@@ -24,7 +24,7 @@ export function Header() {
             Startups
           </Link>
           <Link href="/writing/hermes-on-my-phone" className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-            Hermes
+            Grok Bot
           </Link>
         </div>
       </nav>
