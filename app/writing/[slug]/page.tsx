@@ -1,9 +1,17 @@
+import fs from 'fs'
+import path from 'path'
 import { notFound } from 'next/navigation'
 import { getAllPostSlugs, getPostBySlug } from '@/lib/posts'
+import { CopyablePrompt } from '@/components/CopyablePrompt'
 import type { Metadata } from 'next'
 
 interface PostPageProps {
   params: Promise<{ slug: string }>
+}
+
+function getHermesPrompt(): string {
+  const promptPath = path.join(process.cwd(), 'content/hermes-prompt.md')
+  return fs.readFileSync(promptPath, 'utf8')
 }
 
 export async function generateStaticParams() {
@@ -45,6 +53,8 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const { default: Content } = await import(`@/content/posts/${slug}.mdx`)
+  const isHermesPost = slug === 'hermes-on-my-phone'
+  const hermesPrompt = isHermesPost ? getHermesPrompt() : null
 
   return (
     <article className="py-12">
@@ -55,6 +65,7 @@ export default async function PostPage({ params }: PostPageProps) {
       <div className="prose prose-zinc max-w-none">
         <Content />
       </div>
+      {hermesPrompt && <CopyablePrompt content={hermesPrompt} />}
     </article>
   )
 }
