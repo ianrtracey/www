@@ -53,7 +53,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const { default: Content } = await import(`@/content/posts/${slug}.mdx`)
-  const isHermesPost = slug === 'hermes-on-my-phone'
+  const isHermesPost = slug === 'run-your-own-open-source-grok-bot'
   const hermesPrompt = isHermesPost ? getHermesPrompt() : null
 
   return (
