@@ -23,9 +23,6 @@ export function Header() {
           <Link href="/startups" className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Startups
           </Link>
-          <Link href="/writing/run-your-own-open-source-grok-bot" className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-            Grok Bot
-          </Link>
         </div>
       </nav>
     </header>
