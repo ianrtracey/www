@@ -262,6 +262,6 @@ export async function POST(request: Request) {
     fallback: !isLegalChoice,
     fallbackReason: isLegalChoice
       ? undefined
-      : `Jev returned ${jevChoice === null ? 'no choice' : `"${jevChoice}"'}; a legal move was selected locally.`,
+      : `Jev returned ${jevChoice === null ? 'no choice' : `"${jevChoice}"`}; a legal move was selected locally.`,
   })
 }
