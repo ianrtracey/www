@@ -1,3 +1,4 @@
+import { choice, TypeSafeClient } from '@typesafe-ai/sdk'
 import {
   getBoardRows,
   getLegalMoves,
@@ -97,18 +98,6 @@ function describeMove(board: Square[], index: number) {
   return cellNames[index]
 }
 
-function getNumericRecord(value: unknown) {
-  if (!isRecord(value)) {
-    return undefined
-  }
-
-  const entries = Object.entries(value).filter(
-    (entry): entry is [string, number] => typeof entry[1] === 'number',
-  )
-
-  return entries.length > 0 ? Object.fromEntries(entries) : undefined
-}
-
 export async function POST(request: Request) {
   let body: unknown
 
@@ -189,66 +178,53 @@ export async function POST(request: Request) {
     expectedLegalMoves.map((index) => [String(index), describeMove(board, index)]),
   )
 
-  let jevResponse: Response
+  const client = new TypeSafeClient({
+    apiKey,
+    defaultModel: 'jev-latest',
+    timeout: 20_000,
+    retry: { maxRetries: 0 },
+  })
+  let response
 
   try {
-    jevResponse = await fetch('https://api.typesafe.ai/v1/systemone', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+    response = await client.systemOne({
+      model: 'jev-latest',
+      state: {
+        game: 'tic-tac-toe',
+        rules:
+          '3x3; X and O alternate; first to 3-in-a-row wins; indices 0-8 row-major',
+        board,
+        board_rows: getBoardRows(board),
+        you_are: 'O',
+        legal_moves: expectedLegalMoves,
+        move_history: history,
       },
-      body: JSON.stringify({
-        model: 'jev-latest',
-        state: {
-          game: 'tic-tac-toe',
-          rules:
-            '3x3; X and O alternate; first to 3-in-a-row wins; indices 0-8 row-major',
-          board,
-          board_rows: getBoardRows(board),
-          you_are: 'O',
-          legal_moves: expectedLegalMoves,
-          move_history: history,
-        },
-        questions: {
-          next_move: {
-            type: 'choice',
-            instructions:
-              'Choose the strongest legal move for O. Prefer an immediate win, then block an immediate X win, then improve the chance of winning.',
-            criteria,
-          },
-        },
-      }),
-      cache: 'no-store',
-      signal: AbortSignal.timeout(20_000),
+      questions: {
+        next_move: choice(
+          'Choose the strongest legal move for O. Prefer an immediate win, then block an immediate X win, then improve the chance of winning.',
+          criteria,
+        ),
+      },
     })
-  } catch {
+  } catch (caughtError) {
+    const status =
+      isRecord(caughtError) && typeof caughtError.status === 'number'
+        ? caughtError.status
+        : null
+
     return Response.json(
-      { error: 'Jev could not be reached. Try the move again.' },
+      {
+        error: status
+          ? `Jev rejected the move request (${status}). Try again.`
+          : 'Jev could not be reached. Try the move again.',
+      },
       { status: 502 },
     )
   }
 
-  if (!jevResponse.ok) {
-    return Response.json(
-      { error: `Jev rejected the move request (${jevResponse.status}). Try again.` },
-      { status: 502 },
-    )
-  }
-
-  let payload: unknown
-
-  try {
-    payload = await jevResponse.json()
-  } catch {
-    payload = null
-  }
-
-  const responseRecord = isRecord(payload) ? payload : {}
-  const answers = isRecord(responseRecord.answers) ? responseRecord.answers : {}
-  const answer = isRecord(answers.next_move) ? answers.next_move : {}
-  const jevChoice = typeof answer.choice === 'string' ? answer.choice : null
-  const parsedChoice = jevChoice === null ? NaN : Number(jevChoice)
+  const answer = response.answers.next_move
+  const jevChoice = answer.choice
+  const parsedChoice = Number(jevChoice)
   const isLegalChoice =
     Number.isInteger(parsedChoice) && expectedLegalMoves.includes(parsedChoice)
   const chosenCell = isLegalChoice
@@ -257,12 +233,12 @@ export async function POST(request: Request) {
 
   return Response.json({
     chosenCell,
-    confidence: typeof answer.confidence === 'number' ? answer.confidence : undefined,
-    probabilities: getNumericRecord(answer.probabilities),
-    model: typeof responseRecord.model === 'string' ? responseRecord.model : 'unknown',
+    confidence: answer.confidence,
+    probabilities: answer.probabilities,
+    model: response.model,
     fallback: !isLegalChoice,
     fallbackReason: isLegalChoice
       ? undefined
-      : `Jev returned ${jevChoice === null ? 'no choice' : `"${jevChoice}"`}; a legal move was selected locally.`,
+      : `Jev returned "${jevChoice}"; a legal move was selected locally.`,
   })
 }
