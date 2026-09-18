@@ -257,17 +257,17 @@ export function TicTacToe() {
         </p>
       )}
 
-      <div className="flex items-end justify-between gap-6">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p
           aria-live="polite"
-          className="mt-6 text-lg font-medium text-zinc-900 dark:text-zinc-100"
+          className="text-lg font-medium text-zinc-900 dark:text-zinc-100"
         >
           {status}
         </p>
         <button
           type="button"
           onClick={newGame}
-          className="text-sm text-zinc-500 transition-colors hover:text-blue-500 focus:outline-none focus-visible:text-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4 dark:text-zinc-400 dark:hover:text-blue-400 dark:focus-visible:text-blue-400 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900"
+          className="min-h-11 shrink-0 rounded-lg px-3 py-2.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-blue-500 focus:outline-none focus-visible:text-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-blue-400 dark:focus-visible:text-blue-400 dark:focus-visible:ring-blue-400"
         >
           New game
         </button>
@@ -277,7 +277,7 @@ export function TicTacToe() {
         role="grid"
         aria-label="Tic-tac-toe board"
         aria-busy={isThinking}
-        className="mt-5 grid aspect-square w-full max-w-md grid-cols-3 gap-2"
+        className="mt-5 grid aspect-square w-full max-w-md grid-cols-3 grid-rows-3 gap-2"
       >
         {board.map((square, index) => {
           const isWinningSquare =
@@ -296,13 +296,15 @@ export function TicTacToe() {
                 (mode === 'jev' && currentPlayer === 'O')
               }
               onClick={() => playSquare(index)}
-              className={`flex items-center justify-center rounded-xl border text-5xl font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900 sm:text-6xl ${
+              className={`flex min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-xl border text-4xl font-semibold leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900 sm:text-6xl ${
                 isWinningSquare
                   ? 'border-blue-300 bg-blue-50 text-blue-600 dark:border-blue-700 dark:bg-blue-950/50 dark:text-blue-400'
                   : 'border-zinc-200 bg-zinc-50 text-zinc-800 enabled:hover:border-blue-300 enabled:hover:bg-blue-50/60 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-100 dark:enabled:hover:border-blue-700 dark:enabled:hover:bg-blue-950/30'
               } disabled:cursor-default`}
             >
-              <span aria-hidden="true">{square}</span>
+              <span className="leading-none" aria-hidden="true">
+                {square}
+              </span>
             </button>
           )
         })}
