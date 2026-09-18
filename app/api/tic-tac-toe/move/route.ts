@@ -52,7 +52,8 @@ function isMove(value: unknown): value is Move {
 function validateHistory(history: Move[], board: Square[]) {
   const replay: Square[] = Array(9).fill(null)
 
-  for (const [turn, move] of history.entries()) {
+  for (let turn = 0; turn < history.length; turn += 1) {
+    const move = history[turn]
     const expectedPlayer: Player = turn % 2 === 0 ? 'X' : 'O'
 
     if (move.player !== expectedPlayer || replay[move.index] !== null) {
