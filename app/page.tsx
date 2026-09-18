@@ -100,6 +100,15 @@ export default function Home() {
           </Link>
         </section>
       )}
+
+      <div className="mt-16 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+        <Link
+          href="/tic-tac-toe"
+          className="text-sm text-zinc-400 hover:text-blue-500 dark:hover:text-blue-400"
+        >
+          Take a break with tic-tac-toe &rarr;
+        </Link>
+      </div>
     </div>
   )
 }
