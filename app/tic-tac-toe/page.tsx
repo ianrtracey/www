@@ -6,6 +6,19 @@ export const metadata: Metadata = {
     absolute: 'tic tac toe vs Jev',
   },
   description: "Play tic-tac-toe against TypeSafe's Jev.",
+  openGraph: {
+    title: 'tic tac toe vs Jev',
+    description: "Play tic-tac-toe against TypeSafe's Jev.",
+    url: '/tic-tac-toe',
+    siteName: 'Ian Tracey',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'tic tac toe vs Jev',
+    description: "Play tic-tac-toe against TypeSafe's Jev.",
+  },
 }
 
 export default function TicTacToePage() {
