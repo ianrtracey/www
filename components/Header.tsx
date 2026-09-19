@@ -23,9 +23,6 @@ export function Header() {
           <Link href="/startups" className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Startups
           </Link>
-          <Link href="/jev" className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-            Jev
-          </Link>
         </div>
       </nav>
     </header>
