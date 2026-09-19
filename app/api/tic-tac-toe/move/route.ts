@@ -167,8 +167,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         code: 'missing_api_key',
-        error:
-          'vs Jev needs TYPESAFE_API_KEY set in the server environment. Local mode works without it.',
+        error: 'Jev is not configured on this server.',
       },
       { status: 503 },
     )
