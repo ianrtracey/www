@@ -18,6 +18,12 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Tic-tac-toe
+
+To play against TypeSafe's Jev, copy `.env.example` to `.env.local`, set `TYPESAFE_API_KEY`, restart the development server, and visit [http://localhost:3000/tic-tac-toe](http://localhost:3000/tic-tac-toe). The board and complete move history are sent to the server after every human turn; the server asks Jev to select one of the currently legal moves. The app owns the game state and continuity.
+
+For Vercel, add `TYPESAFE_API_KEY` in the project's Environment Variables settings and redeploy. The key is read only by the route handler and is never sent to the browser.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -1,79 +1,206 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import {
+  getBoardRows,
+  getLegalMoves,
+  getWinningLine,
+  type Move,
+  type Player,
+  type Square,
+} from '@/lib/tic-tac-toe'
 
-type Player = 'X' | 'O'
-type Square = Player | null
 type Scores = Record<Player | 'draws', number>
 
-const winningLines = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-] as const
+type JevMoveResponse = {
+  chosenCell: number
+  confidence?: number
+  probabilities?: Record<string, number>
+  model: string
+  fallback: boolean
+  fallbackReason?: string
+}
 
-function getWinningLine(board: Square[]) {
-  return winningLines.find(([a, b, c]) => {
-    return board[a] !== null && board[a] === board[b] && board[a] === board[c]
-  })
+function getErrorMessage(value: unknown) {
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    'error' in value &&
+    typeof value.error === 'string'
+  ) {
+    return value.error
+  }
+
+  return 'Jev could not choose a move. Try again.'
 }
 
 export function TicTacToe() {
   const [board, setBoard] = useState<Square[]>(Array(9).fill(null))
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
   const [scores, setScores] = useState<Scores>({ X: 0, O: 0, draws: 0 })
+  const [history, setHistory] = useState<Move[]>([])
+  const [isThinking, setIsThinking] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [lastJevResponse, setLastJevResponse] =
+    useState<JevMoveResponse | null>(null)
+  const gameId = useRef(0)
+  const requestController = useRef<AbortController | null>(null)
 
   const winningLine = getWinningLine(board)
   const winner = winningLine ? board[winningLine[0]] : null
   const isDraw = !winner && board.every(Boolean)
   const gameOver = Boolean(winner) || isDraw
-  const status = winner
-    ? `${winner} wins`
-    : isDraw
-      ? 'Draw'
-      : `${currentPlayer} to move`
+  const status = isThinking
+    ? 'Jev is thinking…'
+    : winner
+      ? winner === 'X'
+        ? 'You win'
+        : 'Jev wins'
+      : isDraw
+        ? 'Draw'
+        : currentPlayer === 'X'
+          ? 'Your turn (X)'
+          : 'Jev needs another try'
+
+  function recordResult(nextBoard: Square[], player: Player) {
+    const nextWinningLine = getWinningLine(nextBoard)
+    const nextIsDraw = !nextWinningLine && nextBoard.every(Boolean)
+
+    if (nextWinningLine) {
+      setScores((current) => ({
+        ...current,
+        [player]: current[player] + 1,
+      }))
+      return true
+    }
+
+    if (nextIsDraw) {
+      setScores((current) => ({ ...current, draws: current.draws + 1 }))
+      return true
+    }
+
+    return false
+  }
+
+  async function requestJevMove(nextBoard: Square[], nextHistory: Move[]) {
+    const activeGameId = gameId.current
+    const controller = new AbortController()
+    requestController.current?.abort()
+    requestController.current = controller
+    setIsThinking(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/tic-tac-toe/move', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          board: nextBoard,
+          history: nextHistory,
+          legalMoves: getLegalMoves(nextBoard),
+        }),
+        signal: controller.signal,
+      })
+      const payload: unknown = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        throw new Error(getErrorMessage(payload))
+      }
+
+      const jevMove = payload as JevMoveResponse
+
+      if (
+        !Number.isInteger(jevMove.chosenCell) ||
+        nextBoard[jevMove.chosenCell] !== null
+      ) {
+        throw new Error('Jev returned an invalid move. Start a new game or try again.')
+      }
+
+      if (activeGameId !== gameId.current) {
+        return
+      }
+
+      const jevBoard = [...nextBoard]
+      jevBoard[jevMove.chosenCell] = 'O'
+      const jevHistory = [
+        ...nextHistory,
+        { player: 'O', index: jevMove.chosenCell } satisfies Move,
+      ]
+
+      setBoard(jevBoard)
+      setHistory(jevHistory)
+      setLastJevResponse(jevMove)
+
+      if (!recordResult(jevBoard, 'O')) {
+        setCurrentPlayer('X')
+      }
+    } catch (caughtError) {
+      if (controller.signal.aborted || activeGameId !== gameId.current) {
+        return
+      }
+
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : 'Jev could not choose a move. Try again.',
+      )
+    } finally {
+      if (activeGameId === gameId.current) {
+        setIsThinking(false)
+        requestController.current = null
+      }
+    }
+  }
 
   function playSquare(index: number) {
-    if (board[index] || gameOver) {
+    if (
+      board[index] ||
+      gameOver ||
+      isThinking ||
+      currentPlayer === 'O'
+    ) {
       return
     }
 
     const nextBoard = [...board]
     nextBoard[index] = currentPlayer
-    const nextWinningLine = getWinningLine(nextBoard)
-    const nextIsDraw = !nextWinningLine && nextBoard.every(Boolean)
+    const nextHistory = [...history, { player: currentPlayer, index }]
 
     setBoard(nextBoard)
+    setHistory(nextHistory)
+    setError(null)
 
-    if (nextWinningLine) {
-      setScores((current) => ({
-        ...current,
-        [currentPlayer]: current[currentPlayer] + 1,
-      }))
+    if (recordResult(nextBoard, currentPlayer)) {
       return
     }
 
-    if (nextIsDraw) {
-      setScores((current) => ({ ...current, draws: current.draws + 1 }))
-      return
-    }
-
-    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    setCurrentPlayer('O')
+    void requestJevMove(nextBoard, nextHistory)
   }
 
   function newGame() {
+    gameId.current += 1
+    requestController.current?.abort()
+    requestController.current = null
     setBoard(Array(9).fill(null))
     setCurrentPlayer('X')
+    setHistory([])
+    setIsThinking(false)
+    setError(null)
+    setLastJevResponse(null)
+  }
+
+  const debugState = {
+    board,
+    board_rows: getBoardRows(board),
+    next_player: gameOver ? null : currentPlayer,
+    legal_moves: getLegalMoves(board),
+    move_history: history,
   }
 
   return (
     <div className="mt-10">
-      <div className="flex items-end justify-between gap-6">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p
           aria-live="polite"
           className="text-lg font-medium text-zinc-900 dark:text-zinc-100"
@@ -83,7 +210,7 @@ export function TicTacToe() {
         <button
           type="button"
           onClick={newGame}
-          className="text-sm text-zinc-500 transition-colors hover:text-blue-500 focus:outline-none focus-visible:text-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4 dark:text-zinc-400 dark:hover:text-blue-400 dark:focus-visible:text-blue-400 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900"
+          className="min-h-11 shrink-0 rounded-lg px-3 py-2.5 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-blue-500 focus:outline-none focus-visible:text-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-blue-400 dark:focus-visible:text-blue-400 dark:focus-visible:ring-blue-400"
         >
           New game
         </button>
@@ -92,7 +219,8 @@ export function TicTacToe() {
       <div
         role="grid"
         aria-label="Tic-tac-toe board"
-        className="mt-5 grid aspect-square w-full max-w-md grid-cols-3 gap-2"
+        aria-busy={isThinking}
+        className="mt-5 grid aspect-square w-full max-w-md grid-cols-3 grid-rows-3 gap-2"
       >
         {board.map((square, index) => {
           const isWinningSquare =
@@ -104,23 +232,50 @@ export function TicTacToe() {
               type="button"
               role="gridcell"
               aria-label={`Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}${square ? `, ${square}` : ', empty'}`}
-              disabled={Boolean(square) || gameOver}
+              disabled={
+                Boolean(square) ||
+                gameOver ||
+                isThinking ||
+                currentPlayer === 'O'
+              }
               onClick={() => playSquare(index)}
-              className={`flex items-center justify-center rounded-xl border text-5xl font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900 sm:text-6xl ${
+              className={`flex min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-xl border text-4xl font-semibold leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900 sm:text-6xl ${
                 isWinningSquare
                   ? 'border-blue-300 bg-blue-50 text-blue-600 dark:border-blue-700 dark:bg-blue-950/50 dark:text-blue-400'
                   : 'border-zinc-200 bg-zinc-50 text-zinc-800 enabled:hover:border-blue-300 enabled:hover:bg-blue-50/60 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-100 dark:enabled:hover:border-blue-700 dark:enabled:hover:bg-blue-950/30'
               } disabled:cursor-default`}
             >
-              <span aria-hidden="true">{square}</span>
+              <span className="leading-none" aria-hidden="true">
+                {square}
+              </span>
             </button>
           )
         })}
       </div>
 
+      {error && (
+        <div
+          role="alert"
+          className="mt-4 max-w-md rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+        >
+          <p>{error}</p>
+          {currentPlayer === 'O' && !gameOver && (
+            <button
+              type="button"
+              onClick={() => void requestJevMove(board, history)}
+              className="mt-2 font-medium underline underline-offset-2"
+            >
+              Try Jev again
+            </button>
+          )}
+        </div>
+      )}
+
       <dl className="mt-8 grid max-w-md grid-cols-3 divide-x divide-zinc-200 rounded-xl border border-zinc-200 py-4 text-center dark:divide-zinc-700 dark:border-zinc-700">
         <div>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">X wins</dt>
+          <dt className="text-sm text-zinc-500 dark:text-zinc-400">
+            You (X)
+          </dt>
           <dd className="mt-1 text-xl font-medium">{scores.X}</dd>
         </div>
         <div>
@@ -128,10 +283,34 @@ export function TicTacToe() {
           <dd className="mt-1 text-xl font-medium">{scores.draws}</dd>
         </div>
         <div>
-          <dt className="text-sm text-zinc-500 dark:text-zinc-400">O wins</dt>
+          <dt className="text-sm text-zinc-500 dark:text-zinc-400">
+            Jev (O)
+          </dt>
           <dd className="mt-1 text-xl font-medium">{scores.O}</dd>
         </div>
       </dl>
+
+      <details className="mt-6 max-w-md rounded-xl border border-zinc-200 dark:border-zinc-700">
+        <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          State / debug
+        </summary>
+        <div className="border-t border-zinc-200 px-4 py-4 dark:border-zinc-700">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Current state
+          </h2>
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
+            {JSON.stringify(debugState, null, 2)}
+          </pre>
+          <h2 className="mt-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Last Jev response
+          </h2>
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
+            {lastJevResponse
+              ? JSON.stringify(lastJevResponse, null, 2)
+              : 'No response yet.'}
+          </pre>
+        </div>
+      </details>
     </div>
   )
 }
