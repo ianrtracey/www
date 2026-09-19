@@ -20,9 +20,7 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Tic-tac-toe
 
-Visit [http://localhost:3000/tic-tac-toe](http://localhost:3000/tic-tac-toe) and choose Local (2P) to play without any external service.
-
-To play against TypeSafe's Jev, copy `.env.example` to `.env.local`, set `TYPESAFE_API_KEY`, restart the development server, and choose vs Jev. The board and complete move history are sent to the server after every human turn; the server asks Jev to select one of the currently legal moves. The app owns the game state and continuity.
+To play against TypeSafe's Jev, copy `.env.example` to `.env.local`, set `TYPESAFE_API_KEY`, restart the development server, and visit [http://localhost:3000/tic-tac-toe](http://localhost:3000/tic-tac-toe). The board and complete move history are sent to the server after every human turn; the server asks Jev to select one of the currently legal moves. The app owns the game state and continuity.
 
 For Vercel, add `TYPESAFE_API_KEY` in the project's Environment Variables settings and redeploy. The key is read only by the route handler and is never sent to the browser.
 

@@ -10,7 +10,6 @@ import {
   type Square,
 } from '@/lib/tic-tac-toe'
 
-type Mode = 'local' | 'jev'
 type Scores = Record<Player | 'draws', number>
 
 type JevMoveResponse = {
@@ -36,7 +35,6 @@ function getErrorMessage(value: unknown) {
 }
 
 export function TicTacToe() {
-  const [mode, setMode] = useState<Mode>('local')
   const [board, setBoard] = useState<Square[]>(Array(9).fill(null))
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
   const [scores, setScores] = useState<Scores>({ X: 0, O: 0, draws: 0 })
@@ -55,18 +53,14 @@ export function TicTacToe() {
   const status = isThinking
     ? 'Jev is thinking…'
     : winner
-      ? mode === 'jev'
-        ? winner === 'X'
-          ? 'You win'
-          : 'Jev wins'
-        : `${winner} wins`
+      ? winner === 'X'
+        ? 'You win'
+        : 'Jev wins'
       : isDraw
         ? 'Draw'
-        : mode === 'jev'
-          ? currentPlayer === 'X'
-            ? 'Your turn (X)'
-            : 'Jev needs another try'
-          : `${currentPlayer} to move`
+        : currentPlayer === 'X'
+          ? 'Your turn (X)'
+          : 'Jev needs another try'
 
   function recordResult(nextBoard: Square[], player: Player) {
     const nextWinningLine = getWinningLine(nextBoard)
@@ -163,7 +157,7 @@ export function TicTacToe() {
       board[index] ||
       gameOver ||
       isThinking ||
-      (mode === 'jev' && currentPlayer === 'O')
+      currentPlayer === 'O'
     ) {
       return
     }
@@ -180,13 +174,8 @@ export function TicTacToe() {
       return
     }
 
-    if (mode === 'jev') {
-      setCurrentPlayer('O')
-      void requestJevMove(nextBoard, nextHistory)
-      return
-    }
-
-    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    setCurrentPlayer('O')
+    void requestJevMove(nextBoard, nextHistory)
   }
 
   function newGame() {
@@ -201,16 +190,6 @@ export function TicTacToe() {
     setLastJevResponse(null)
   }
 
-  function changeMode(nextMode: Mode) {
-    if (nextMode === mode) {
-      return
-    }
-
-    setMode(nextMode)
-    setScores({ X: 0, O: 0, draws: 0 })
-    newGame()
-  }
-
   const debugState = {
     board,
     board_rows: getBoardRows(board),
@@ -221,42 +200,6 @@ export function TicTacToe() {
 
   return (
     <div className="mt-10">
-      <div
-        className="flex w-fit rounded-lg border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-800/50"
-        aria-label="Game mode"
-      >
-        {(
-          [
-            ['local', 'Local (2P)'],
-            ['jev', 'vs Jev'],
-          ] as const
-        ).map(([value, label]) => (
-          <button
-            key={value}
-            type="button"
-            aria-pressed={mode === value}
-            onClick={() => changeMode(value)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-              mode === value
-                ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
-                : 'text-zinc-500 hover:text-blue-500 dark:text-zinc-400 dark:hover:text-blue-400'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {mode === 'jev' && (
-        <p className="mt-3 max-w-md text-sm text-zinc-500 dark:text-zinc-400">
-          You are X and move first. Jev is O. This mode requires{' '}
-          <code className="text-zinc-700 dark:text-zinc-300">
-            TYPESAFE_API_KEY
-          </code>{' '}
-          on the server.
-        </p>
-      )}
-
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p
           aria-live="polite"
@@ -293,7 +236,7 @@ export function TicTacToe() {
                 Boolean(square) ||
                 gameOver ||
                 isThinking ||
-                (mode === 'jev' && currentPlayer === 'O')
+                currentPlayer === 'O'
               }
               onClick={() => playSquare(index)}
               className={`flex min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-xl border text-4xl font-semibold leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-zinc-900 sm:text-6xl ${
@@ -316,7 +259,7 @@ export function TicTacToe() {
           className="mt-4 max-w-md rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
         >
           <p>{error}</p>
-          {mode === 'jev' && currentPlayer === 'O' && !gameOver && (
+          {currentPlayer === 'O' && !gameOver && (
             <button
               type="button"
               onClick={() => void requestJevMove(board, history)}
@@ -331,7 +274,7 @@ export function TicTacToe() {
       <dl className="mt-8 grid max-w-md grid-cols-3 divide-x divide-zinc-200 rounded-xl border border-zinc-200 py-4 text-center dark:divide-zinc-700 dark:border-zinc-700">
         <div>
           <dt className="text-sm text-zinc-500 dark:text-zinc-400">
-            {mode === 'jev' ? 'You (X)' : 'X wins'}
+            You (X)
           </dt>
           <dd className="mt-1 text-xl font-medium">{scores.X}</dd>
         </div>
@@ -341,35 +284,33 @@ export function TicTacToe() {
         </div>
         <div>
           <dt className="text-sm text-zinc-500 dark:text-zinc-400">
-            {mode === 'jev' ? 'Jev (O)' : 'O wins'}
+            Jev (O)
           </dt>
           <dd className="mt-1 text-xl font-medium">{scores.O}</dd>
         </div>
       </dl>
 
-      {mode === 'jev' && (
-        <details className="mt-6 max-w-md rounded-xl border border-zinc-200 dark:border-zinc-700">
-          <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            State / debug
-          </summary>
-          <div className="border-t border-zinc-200 px-4 py-4 dark:border-zinc-700">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Current state
-            </h2>
-            <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
-              {JSON.stringify(debugState, null, 2)}
-            </pre>
-            <h2 className="mt-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Last Jev response
-            </h2>
-            <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
-              {lastJevResponse
-                ? JSON.stringify(lastJevResponse, null, 2)
-                : 'No response yet.'}
-            </pre>
-          </div>
-        </details>
-      )}
+      <details className="mt-6 max-w-md rounded-xl border border-zinc-200 dark:border-zinc-700">
+        <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          State / debug
+        </summary>
+        <div className="border-t border-zinc-200 px-4 py-4 dark:border-zinc-700">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Current state
+          </h2>
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
+            {JSON.stringify(debugState, null, 2)}
+          </pre>
+          <h2 className="mt-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Last Jev response
+          </h2>
+          <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300">
+            {lastJevResponse
+              ? JSON.stringify(lastJevResponse, null, 2)
+              : 'No response yet.'}
+          </pre>
+        </div>
+      </details>
     </div>
   )
 }
