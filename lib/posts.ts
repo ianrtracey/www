@@ -25,8 +25,9 @@ export function getAllPosts(): PostMeta[] {
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const { data } = matter(fileContents)
 
-      const date = data.date
-        ? new Date(data.date).toLocaleDateString('en-US', {
+      const rawDate = data.date ? new Date(data.date) : null
+      const date = rawDate
+        ? rawDate.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -38,9 +39,16 @@ export function getAllPosts(): PostMeta[] {
         title: data.title || slug,
         date,
         description: data.description || '',
+        _rawDate: rawDate,
       }
     })
-    .sort((a, b) => (a.date > b.date ? -1 : 1))
+    .sort((a, b) => {
+      if (!a._rawDate && !b._rawDate) return 0
+      if (!a._rawDate) return 1
+      if (!b._rawDate) return -1
+      return b._rawDate.getTime() - a._rawDate.getTime()
+    })
+    .map(({ _rawDate, ...post }) => post)
 
   return posts
 }
