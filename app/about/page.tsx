@@ -14,9 +14,14 @@ export default function About() {
         <h2 className="text-xl font-medium text-zinc-400">Work</h2>
         <div className="mt-4 space-y-6">
           <div>
+            <p className="font-medium">Member of Technical Staff, <a href="https://www.anthropic.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Anthropic</a></p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Building new products and making the GPUs go brrr</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">October 2026 - Present</p>
+          </div>
+          <div>
             <p className="font-medium">Applied AI, <a href="https://ramp.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Ramp</a></p>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Building AI agents to automate financial operations</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2025 - Present</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">2025 - 2026</p>
           </div>
           <div>
             <p className="font-medium">Co-Founder & CTO, <a href="https://turntable.so" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Turntable (YC W23)</a></p>

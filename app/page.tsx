@@ -9,7 +9,7 @@ export default function Home() {
       <section>
         <h1 className="text-3xl font-semibold">Hey, I&apos;m Ian</h1>
         <p className="mt-4 text-zinc-500 dark:text-zinc-400">
-          I work on Applied AI at <a href="https://ramp.com/" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Ramp</a> in NYC. I write and invest sometimes.
+          I work at <a href="https://www.anthropic.com/" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Anthropic</a> in NYC. I write and invest sometimes.
         </p>
       </section>
 
