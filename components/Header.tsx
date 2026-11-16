@@ -14,7 +14,7 @@ export function Header() {
           <ThemeToggle />
         </div>
         <div className="flex items-center gap-3 text-sm sm:gap-6 sm:text-base">
-          <Link href="/" className="whitespace-nowrap text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <Link href="/about" className="whitespace-nowrap text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             About
           </Link>
           <Link href="/writing" className="whitespace-nowrap text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">

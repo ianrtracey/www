@@ -14,47 +14,6 @@ export default function Home() {
       </section>
 
       <section className="mt-16">
-        <h2 className="text-xl font-medium text-zinc-400">Work</h2>
-        <div className="mt-4 space-y-6">
-          <div>
-            <p className="font-medium">Applied AI, <a href="https://ramp.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Ramp</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Building AI agents to automate financial operations</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2025 - Present</p>
-          </div>
-          <div>
-            <p className="font-medium">Co-Founder & CTO, <a href="https://turntable.so" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Turntable (YC W23)</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">AI products to automate data pipelines</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2023 - 2025</p>
-          </div>
-          <div>
-            <p className="font-medium">Tech Lead, <a href="https://stripe.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Stripe</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">ML ranking systems, hosted UI products</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2021 - 2023</p>
-          </div>
-          <div>
-            <p className="font-medium">Software Engineer, <a href="https://pinterest.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Pinterest</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Growth engineering, 5x&apos;d SMB advertising business</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2018 - 2021</p>
-          </div>
-          <div>
-            <p className="font-medium">Software Engineer, <a href="https://atlassian.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Atlassian</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Created Atlassian Guard security product</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2017 - 2018</p>
-          </div>
-          <div>
-            <p className="font-medium">Software Engineer, <a href="https://tucson.com/business/article_09637f1a-4cb7-5953-a1d8-e6759f992bc0.html" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Latitude (Acquired by L3)</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Drone swarm applications for DARPA special projects</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2015 - 2017</p>
-          </div>
-          <div>
-            <p className="font-medium">Co-Founder & President, <a href="https://medium.com/@iantracey/what-i-learned-about-starting-things-and-people-after-3-years-of-running-hackathons-93d9071e0496" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Hack Arizona</a></p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">3000+ students, $500k in sponsorships, lots of startups launched</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">2014 - 2017</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-16">
         <h2 className="text-xl font-medium text-zinc-400">Investing</h2>
         <div className="mt-4 space-y-4">
           <div>
@@ -100,15 +59,6 @@ export default function Home() {
           </Link>
         </section>
       )}
-
-      <div className="mt-16 border-t border-zinc-100 pt-6 dark:border-zinc-800">
-        <Link
-          href="/tic-tac-toe"
-          className="text-sm text-zinc-400 hover:text-blue-500 dark:hover:text-blue-400"
-        >
-          Take a break with tic-tac-toe &rarr;
-        </Link>
-      </div>
     </div>
   )
 }
