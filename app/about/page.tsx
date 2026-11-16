@@ -16,7 +16,6 @@ export default function About() {
           <div>
             <p className="font-medium">Member of Technical Staff, <a href="https://www.anthropic.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Anthropic</a></p>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Building new products and making the GPUs go brrr</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">October 2026 - Present</p>
           </div>
           <div>
             <p className="font-medium">Applied AI, <a href="https://ramp.com" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">Ramp</a></p>
