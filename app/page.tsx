@@ -44,9 +44,6 @@ export default function Home() {
                   <h3 className="font-medium group-hover:text-blue-500 dark:group-hover:text-blue-400">
                     {post.title}
                   </h3>
-                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                    {post.description}
-                  </p>
                 </Link>
               </article>
             ))}
